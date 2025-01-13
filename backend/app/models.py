@@ -1,16 +1,15 @@
 from django.db import models
 
 # Create your models here.
+def upload_to(instance, filename):
+    return 'images/{filename}'.format(filename=filename)
+
 class Monster(models.Model):
-    id = models.AutoField(primary_key=True)              # An ID that autoincrements 
-    name = models.CharField(max_length=100, unique=True) # Monster name
-    species = models.CharField(max_length=100)           # Species (e.g., Flying Wyvern, Elder Dragon)
-    description = models.TextField(blank=True)           # A short description of the monster
+    id = models.AutoField(primary_key=True)             
+    name = models.CharField(max_length=100, unique=True) 
+    species = models.CharField(max_length=100)           
+    description = models.TextField(blank=True)         
+    image = models.ImageField(blank=True, null=True, upload_to=upload_to)
 
-
-    # Rewards
-    #carve_rewards = models.JSONField(null=True, blank=True)       # Materials dropped after hunting (e.g., {"Fang": 10, "Hide": 5})
-
-    # Timestamps
-    created_at = models.DateTimeField(auto_now_add=True) # When the monster was added
-    updated_at = models.DateTimeField(auto_now=True)     # When the monster was last updated
+    created_at = models.DateTimeField(auto_now_add=True) 
+    updated_at = models.DateTimeField(auto_now=True)     
