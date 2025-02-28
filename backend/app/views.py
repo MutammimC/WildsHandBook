@@ -12,10 +12,12 @@ from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from .models import Monster
-from .serializers import MonsterSerializer
+from .models import Monster, User
+from .serializers import MonsterSerializer, UserSerializer
 from rest_framework import generics
 from rest_framework import viewsets
+from rest_framework.exceptions import ValidationError
+import re
 
 class MonsterAPI(APIView):
 
@@ -90,6 +92,34 @@ class MonsterViewSet(viewsets.ModelViewSet):
         queryset = super().get_queryset()
         name = self.request.query_params.get('name', None)
         if name:
-            queryset = queryset.filter(name__icontains=name)  # Filter by name
+            queryset = queryset.filter(name__icontains=name)  
         return queryset
-    
+
+class UserViewSet(viewsets.ModelViewSet):  
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+
+    def create(self, request, *args, **kwargs):
+        email = request.data.get("email")
+        username = request.data.get("username")
+        password = request.data.get("password")
+
+        
+        if not email or self.queryset.filter(email=email).exists():
+            raise ValidationError({"email": "This email is already in use."})
+
+        
+        if not username or self.queryset.filter(username=username).exists():
+            raise ValidationError({"username": "This username is already taken."})
+
+        # Validate password complexity
+        if not password:
+            raise ValidationError({"password": "Password is required."})
+        
+        pattern = r"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$"
+        if not re.match(pattern, password):
+            raise ValidationError({
+                "password": "Password must contain at least 8 characters, one uppercase letter, one lowercase letter, one digit, and one special character."
+            })
+
+        return super().create(request, *args, **kwargs)

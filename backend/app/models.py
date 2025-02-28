@@ -1,5 +1,5 @@
 from django.db import models
-
+from django.contrib.auth.models import AbstractBaseUser
 # Create your models here.
 def upload_to(instance, filename):
     return 'images/{filename}'.format(filename=filename)
@@ -13,3 +13,14 @@ class Monster(models.Model):
 
     created_at = models.DateTimeField(auto_now_add=True) 
     updated_at = models.DateTimeField(auto_now=True)     
+
+
+
+class User(AbstractBaseUser):
+    id = models.AutoField(primary_key=True)
+    email = models.EmailField(unique=True)
+    date_joined = models.DateTimeField(auto_now_add=True)
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = ['email','username', 'password']
+    def __str__(self):
+        return self.username

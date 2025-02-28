@@ -3,7 +3,7 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from django.contrib import admin
-from .views import MonsterViewSet
+from .views import MonsterViewSet, UserViewSet
 from django.views.generic import RedirectView #For a generic homepage for now
 from django.conf import settings
 from django.conf.urls.static import static
@@ -18,7 +18,7 @@ from django.conf.urls.static import static
 ]'''
 router = DefaultRouter()
 router.register(r'Monster', MonsterViewSet, basename='monster')
-
+router.register(r'User', UserViewSet, basename='user')
 urlpatterns = [
     path('', include(router.urls)),  # Automatically generates all routes for CRUD operations
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
