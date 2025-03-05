@@ -18,7 +18,8 @@ from django.conf.urls.static import static
 ]'''
 router = DefaultRouter()
 router.register(r'Monster', MonsterViewSet, basename='monster')
-router.register(r'User', UserViewSet, basename='user')
+router.register(r'User', UserViewSet, basename='User')
 urlpatterns = [
     path('', include(router.urls)),  # Automatically generates all routes for CRUD operations
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
